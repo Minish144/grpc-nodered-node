@@ -1,0 +1,54 @@
+// mock proto file
+
+syntax = "proto3";
+
+package api;
+
+
+message AnyValue {
+    oneof value {
+        bool bool = 1;
+        string string = 2;
+        int32 int32 = 3;
+        int64 int64 = 4;
+        float float = 5;
+        double double = 6;
+    }
+}
+
+enum EventType {
+    EVENT_TYPE_UNKNOWN = 0;
+    EVENT_TYPE_SYSTEM = 1;
+    EVENT_TYPE_DEVICE = 2;
+    EVENT_TYPE_SENSOR = 3;
+    EVENT_TYPE_USER = 4;
+}
+
+message SubscribeToEventsRequest {
+}
+
+message Event {
+    string tag = 1;
+    EventType type = 2;
+    bytes data = 3; // JSON
+}
+
+message SubscribeToDataStreamRequest {
+}
+
+message Metric {
+    uint32 sensorID = 1;
+    uint32 deviceID = 2;
+    google.protobuf.Timestamp createdAt = 3;
+    AnyValue value = 4;
+}
+
+service ApiService {
+    // Стрим событий
+    rpc StartEventsStream(stream SubscribeToEventsRequest) returns (stream Event) {
+    }
+
+    // Стрим данных
+    rpc StartDataStream(stream SubscribeToDataStreamRequest) returns (stream Metric) {
+    }
+}
